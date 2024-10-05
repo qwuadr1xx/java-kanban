@@ -1,4 +1,5 @@
-package PACKAGE_NAME;
-
 public enum TaskCondition {
+    NEW,
+    IN_PROGRESS,
+    DONE
 }
