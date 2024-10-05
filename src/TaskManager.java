@@ -4,147 +4,83 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TaskManager {
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, Task> epics = new HashMap<>();
-    private Map<Integer, Task> subtasks = new HashMap<>();
+    private final Map<Long, Task> tasks = new HashMap<>();
+    private final Map<Long, Epic> epics = new HashMap<>();
+    private final Map<Long, Subtask> subtasks = new HashMap<>();
 
-    //короче думаю, что нет смысла создавать 3 разных мапа, а просто при выводе получать класс каждого таска
-    public List<String> getListOfTasks() {
-        if (!tasks.isEmpty()) {
-            List<String> listOfTasks = new ArrayList<>();
-            for (Object task : tasks.values()) {
-                listOfTasks.add(String.valueOf(task));
-            }
-            return listOfTasks;
-        } else {
-            return null;
-        }
+    private long idCounter = 1;
+
+    public List<Task> getListOfTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
-    public List<String> getListOfEpics() {
-        if (!epics.isEmpty()) {
-            List<String> listOfEpics = new ArrayList<>();
-            for (Object epic : epics.values()) {
-                listOfEpics.add(String.valueOf(epic));
-            }
-            return listOfEpics;
-        } else {
-            return null;
-        }
+    public List<Epic> getListOfEpics() {
+        return new ArrayList<>(epics.values());
     }
 
-    public List<String> getListOfSubtasks() {
-        if (!subtasks.isEmpty()) {
-            List<String> listOfSubtasks = new ArrayList<>();
-            for (Object subtask : subtasks.values()) {
-                listOfSubtasks.add(String.valueOf(subtask));
-            }
-            return listOfSubtasks;
-        } else {
-            return null;
-        }
+    public List<Subtask> getListOfSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     public void clearTasks() {
         tasks.clear();
+    }
+
+    public void clearEpics() {
         epics.clear();
+    }
+
+    public void clearSubtasks() {
         subtasks.clear();
     }
 
-    public Task getTaskById(int id) {
-        if (!tasks.isEmpty()) {
-            if (tasks.containsKey(id)) { //я так думаю, что containsKey тут не нужен
-                for (Integer taskId : tasks.keySet()) {
-                    if (taskId == id) {
-                        return tasks.get(id);
-                    }
-                }
-            }
-        }
-        if (!epics.isEmpty()) {
-            if (epics.containsKey(id)) {
-                for (Integer taskId : epics.keySet()) {
-                    if (taskId == id) {
-                        return epics.get(id);
-                    }
-                }
-            }
-        }
-        if (!subtasks.isEmpty()) {
-            if (subtasks.containsKey(id)) {
-                for (Integer taskId : subtasks.keySet()) {
-                    if (taskId == id) {
-                        return subtasks.get(id);
-                    }
-                }
-            }
-        }
-        return null;
+    public Task getTaskById(long id) {
+        return tasks.get(id);
     }
 
-/*    public boolean addTask(Task task) {
-        int id = generateId();
-//        task.setId(generateId());
-        task.CONDITION = TaskCondition.NEW;
-        tasks.put(id, task);
-        return true;
+    public Epic getEpicById(long id) {
+        return epics.get(id);
     }
 
-    public boolean addEpic(Epic epic) {
-        int id = generateId();
-//        epic.setId(generateId());
-        epic.CONDITION = TaskCondition.NEW;
-
-        return true;
+    public Subtask getSubtaskById(long id) {
+        return subtasks.get(id);
     }
-
-    public boolean addSubtask(Subtask subtask) {
-        int id = generateId();
-//        subtask.setId(generateId());
-        subtask.CONDITION = TaskCondition.NEW;
-        return true;
-    } */
 
     public void addTask(Task task) {
-        switch (task.getClass().toString()) {
-            case "Task" -> {
-                task.CONDITION = TaskCondition.NEW;
-                tasks.put(generateId(task), task);
-                return;
-            }
-            case "Epic" -> {
-                task.CONDITION = TaskCondition.NEW;
-                epics.put(generateId(task), task);
-                return;
-            }
-            case "Subtask" -> {
-                task.CONDITION = TaskCondition.NEW;
-                subtasks.put(generateId(task), task);
-                return;
-            }
-            default -> {
-                return;
-            }
-        }
+        task.CONDITION = TaskCondition.NEW;
+        long id = generateId();
+        task = new Task(id);
+        tasks.put(id, task);
+    }
+
+    public void addEpic(Epic epic) {
+        epic.CONDITION = TaskCondition.NEW;
+        long id = generateId();
+        epic = new Epic(id);
+        epics.put(id, epic);
+    }
+
+    public void addSubtask(Subtask subtask) {
+        subtask.CONDITION = TaskCondition.NEW;
+        long id = generateId();
+        subtask = new Subtask(id, epics.get(subtask.getEpicId()));
+        subtasks.put(id, subtask);
+
     }
 
     public void updateTask(Task task) {
-
+        tasks.put(task.getId(), task);
     }
 
-    private int generateId(Task task) {
-        return hashCode(task);
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
     }
 
-    public int hashCode(Task task) {
-        int hash = 17;
-        if (task.getName() != null) {
-            hash = task.getName().hashCode();
-        }
-        if (task.getDescription() != null) {
-            hash = hash + task.getDescription().hashCode();
-        }
-        return hash;
+    public void updateSubtask(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
     }
 
+    private long generateId() {
+        return idCounter++;
+    }
 }

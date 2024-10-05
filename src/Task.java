@@ -1,18 +1,23 @@
 public class Task {
     protected String name;
     protected String description;
-    protected TaskCondition CONDITION;
+    protected TaskCondition taskCondition;
+    protected long id;
 
-    Task(String name, String description) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public Task(long id) {
+        this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public long getId() {
+        return id;
+    }
+
+    public void changeTaskCondition(TaskCondition taskCondition) {
+        this.taskCondition = taskCondition;
     }
 }
