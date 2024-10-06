@@ -50,21 +50,24 @@ public class TaskManager {
 
     public void addTask(Task task) {
         long id = generateId();
+        System.out.println(id);
         task = new Task(task.getName(), task.getDescription(), id);
         tasks.put(id, task);
     }
 
     public void addEpic(Epic epic) {
         long id = generateId();
+        System.out.println(id);
         epic = new Epic(epic.getName(), epic.getDescription(), id);
-        tasks.put(id, epic);
+        epics.put(id, epic);
     }
 
     public void addSubtask(Subtask subtask) {
         long id = generateId();
         subtask = new Subtask(subtask.getName(), subtask.getDescription(), id);
-        epics.get(subtask.getEpicId()).addIdToList(id);
         tasks.put(id, subtask);
+        (epics.get(subtask.getEpicId())).addIdToList(id);
+        updateEpicCondition(subtask.getEpicId());
     }
 
     public void updateTask(Task task) {
@@ -80,6 +83,7 @@ public class TaskManager {
     public void updateSubtask(Subtask subtask) {
         subtask = new Subtask(subtask.getName(), subtask.getDescription(), subtask.getId());
         subtasks.put(subtask.getId(), subtask);
+        updateEpicCondition(subtask.getEpicId());
     }
 
     public void removeTask(long id) {
@@ -103,6 +107,7 @@ public class TaskManager {
             epic.removeIdFromList(id);
         }
         subtasks.remove(id);
+        updateEpicCondition(subtask.getEpicId());
     }
 
 

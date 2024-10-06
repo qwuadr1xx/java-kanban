@@ -28,4 +28,11 @@ public class Epic extends Task {
     public List<Long> getIdList() {
         return subtaskIdList;
     }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "subtaskIdList=" + subtaskIdList +
+                '}';
+    }
 }

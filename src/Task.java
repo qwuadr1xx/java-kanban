@@ -39,4 +39,14 @@ public class Task {
     public void changeTaskCondition(TaskCondition taskCondition) {
         this.taskCondition = taskCondition;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "name='" + name + '\'' +
+                ", description.length='" + description.length() + '\'' +
+                ", taskCondition=" + taskCondition +
+                ", id=" + id +
+                '}';
+    }
 }
