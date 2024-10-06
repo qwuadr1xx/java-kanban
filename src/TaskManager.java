@@ -1,7 +1,4 @@
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class TaskManager {
     private final Map<Long, Task> tasks = new HashMap<>();
@@ -50,23 +47,18 @@ public class TaskManager {
 
     public void addTask(Task task) {
         long id = generateId();
-        System.out.println(id);
-        task = new Task(task.getName(), task.getDescription(), id);
-        tasks.put(id, task);
+        tasks.put(id, new Task(task.getName(), task.getDescription(), id));
     }
 
     public void addEpic(Epic epic) {
         long id = generateId();
-        System.out.println(id);
-        epic = new Epic(epic.getName(), epic.getDescription(), id);
-        epics.put(id, epic);
+        epics.put(id, new Epic(epic.getName(), epic.getDescription(), id));
     }
 
     public void addSubtask(Subtask subtask) {
         long id = generateId();
-        subtask = new Subtask(subtask.getName(), subtask.getDescription(), id);
-        tasks.put(id, subtask);
-        (epics.get(subtask.getEpicId())).addIdToList(id);
+        subtasks.put(id, new Subtask(subtask.getName(), subtask.getDescription(), id, subtask.getEpicId()));
+        epics.get(subtask.getEpicId()).addIdToList(id);
         updateEpicCondition(subtask.getEpicId());
     }
 
@@ -113,25 +105,16 @@ public class TaskManager {
 
     private void updateEpicCondition(long epicId) {
         Epic epic = epics.get(epicId);
-        if (epic.getIdList() != null) {
-            for (long id : epic.getIdList()) {
-                Subtask subtask = subtasks.get(id);
-                if (subtask.getTaskCondition().equals(TaskCondition.NEW)) {
-                    epic.setTaskCondition(TaskCondition.NEW);
-                    return;
-                }
-            }
+        List<TaskCondition> taskConditionList = new ArrayList<>();
+        for (long id : epic.getIdList()) {
+            taskConditionList.add(getSubtaskById(id).getTaskCondition());
+        }
+        if (taskConditionList.contains(TaskCondition.IN_PROGRESS)) {
+            epic.setTaskCondition(TaskCondition.IN_PROGRESS);
+        } else if (!taskConditionList.contains(TaskCondition.IN_PROGRESS) && !taskConditionList.contains(TaskCondition.NEW)) {
+            epic.setTaskCondition(TaskCondition.DONE);
         } else {
             epic.setTaskCondition(TaskCondition.NEW);
-        }
-        for (long id : epic.getIdList()) {
-            Subtask subtask = subtasks.get(id);
-            if (subtask.getTaskCondition() != TaskCondition.DONE) {
-                epic.setTaskCondition(TaskCondition.IN_PROGRESS);
-                return;
-            } else {
-                epic.setTaskCondition(TaskCondition.DONE);
-            }
         }
     }
 
