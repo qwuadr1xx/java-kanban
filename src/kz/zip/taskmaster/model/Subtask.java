@@ -1,3 +1,5 @@
+package kz.zip.taskmaster.model;
+
 public class Subtask extends Task {
     private long epicId;
 
@@ -17,7 +19,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "kz.zip.taskmaster.model.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description.length='" + getDescription().length() + '\'' +
                 ", taskCondition=" + getTaskCondition() +

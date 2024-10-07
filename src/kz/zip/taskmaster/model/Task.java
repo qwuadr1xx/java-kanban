@@ -1,3 +1,7 @@
+package kz.zip.taskmaster.model;
+
+import kz.zip.taskmaster.enums.TaskCondition;
+
 public class Task {
     private String name;
     private String description;
@@ -42,7 +46,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "kz.zip.taskmaster.model.Task{" +
                 "name='" + name + '\'' +
                 ", description.length='" + description.length() + '\'' +
                 ", taskCondition=" + taskCondition +

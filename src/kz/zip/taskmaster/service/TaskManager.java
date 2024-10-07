@@ -1,3 +1,10 @@
+package kz.zip.taskmaster.service;
+
+import kz.zip.taskmaster.enums.TaskCondition;
+import kz.zip.taskmaster.model.Epic;
+import kz.zip.taskmaster.model.Subtask;
+import kz.zip.taskmaster.model.Task;
+
 import java.util.*;
 
 public class TaskManager {
@@ -63,18 +70,15 @@ public class TaskManager {
     }
 
     public void updateTask(Task task) {
-        task = new Task(task.getName(), task.getDescription(), task.getId());
-        tasks.put(task.getId(), task);
+        tasks.put(task.getId(), new Task(task.getName(), task.getDescription(), task.getId()));
     }
 
     public void updateEpic(Epic epic) {
-        epic = new Epic(epic.getName(), epic.getDescription(), epic.getId());
-        epics.put(epic.getId(), epic);
+        epics.put(epic.getId(), new Epic(epic.getName(), epic.getDescription(), epic.getId()));
     }
 
     public void updateSubtask(Subtask subtask) {
-        subtask = new Subtask(subtask.getName(), subtask.getDescription(), subtask.getId());
-        subtasks.put(subtask.getId(), subtask);
+        subtasks.put(subtask.getId(), new Subtask(subtask.getName(), subtask.getDescription(), subtask.getId()));
         updateEpicCondition(subtask.getEpicId());
     }
 
@@ -93,11 +97,7 @@ public class TaskManager {
     public void removeSubtask(long id) {
         Subtask subtask = subtasks.get(id);
         Epic epic = epics.get(subtask.getEpicId());
-        if (epic.getIdList().size() == 1) {
-            epic.clearList();
-        } else {
-            epic.removeIdFromList(id);
-        }
+        epic.removeIdFromList(id);
         subtasks.remove(id);
         updateEpicCondition(subtask.getEpicId());
     }
