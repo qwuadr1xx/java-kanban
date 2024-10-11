@@ -2,6 +2,8 @@ package kz.zip.taskmaster.model;
 
 import kz.zip.taskmaster.enums.TaskCondition;
 
+import java.util.Objects;
+
 public class Task {
     private String name;
     private String description;
@@ -52,5 +54,17 @@ public class Task {
                 ", taskCondition=" + taskCondition +
                 ", id=" + id +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task task)) return false;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && taskCondition == task.taskCondition;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, taskCondition, id);
     }
 }
