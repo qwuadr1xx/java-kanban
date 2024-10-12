@@ -1,6 +1,6 @@
-package kz.zip.taskmaster.model;
+package main.java.kz.zip.taskmaster.model;
 
-import kz.zip.taskmaster.enums.TaskCondition;
+import main.java.kz.zip.taskmaster.enums.TaskCondition;
 
 import java.util.Objects;
 
@@ -48,7 +48,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "kz.zip.taskmaster.model.Task{" +
+        return "main.java.kz.zip.taskmaster.model.Task{" +
                 "name='" + name + '\'' +
                 ", description.length='" + description.length() + '\'' +
                 ", taskCondition=" + taskCondition +

@@ -1,13 +1,13 @@
-package kz.zip.taskmaster.service;
+package main.java.kz.zip.taskmaster.service;
 
-import kz.zip.taskmaster.enums.TaskCondition;
-import kz.zip.taskmaster.model.Epic;
-import kz.zip.taskmaster.model.Subtask;
-import kz.zip.taskmaster.model.Task;
+import main.java.kz.zip.taskmaster.enums.TaskCondition;
+import main.java.kz.zip.taskmaster.model.Epic;
+import main.java.kz.zip.taskmaster.model.Subtask;
+import main.java.kz.zip.taskmaster.model.Task;
 
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager<Task, Epic, Subtask> {
+public class InMemoryTaskManager implements TaskManager {
     private final Map<Long, Task> tasks = new HashMap<>();
     private final Map<Long, Epic> epics = new HashMap<>();
     private final Map<Long, Subtask> subtasks = new HashMap<>();
@@ -132,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager<Task, Epic, Subtask> {
         }
     }
 
-    private void updateEpicCondition(long epicId) {
+    public void updateEpicCondition(long epicId) {
         Epic epic = epics.get(epicId);
         List<TaskCondition> taskConditionList = new ArrayList<>();
         for (long id : epic.getIdList()) {

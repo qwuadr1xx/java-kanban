@@ -1,12 +1,12 @@
-package kz.zip.taskmaster.service;
+package main.java.kz.zip.taskmaster.service;
 
-import kz.zip.taskmaster.model.Task;
+import main.java.kz.zip.taskmaster.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager<Task> {
-    private final List<Task> histroyList = new ArrayList<>(11);
+    private final List<Task> histroyList = new ArrayList<>();
 
     @Override
     public List<Task> getHistory() {
@@ -15,8 +15,10 @@ public class InMemoryHistoryManager implements HistoryManager<Task> {
 
     @Override
     public void addToHistoryList(Task task) {
+        if (histroyList.size() == 10) {
+            histroyList.remove(9);
+        }
         histroyList.addFirst(task);
-        histroyList.remove(10);
     }
 
 }
