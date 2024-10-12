@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private List<Long> subtaskIdList;
+    private final List<Long> subtaskIdList;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -30,7 +30,8 @@ public class Epic extends Task {
     }
 
     public List<Long> getIdList() {
-        return subtaskIdList;
+        List<Long> listToReturn = subtaskIdList;
+        return listToReturn;
     }
 
     @Override

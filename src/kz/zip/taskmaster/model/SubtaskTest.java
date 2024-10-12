@@ -19,13 +19,6 @@ class SubtaskTest {
     }
 
     @Test
-    public void checkIfSameTaskId() {
-        Subtask subtask = new Subtask("subtask1", "desc1", 1);
-        taskManager.addTask(subtask);
-        Assertions.assertEquals(taskManager.getSubtaskById(2), taskManager.getSubtaskById(2));
-    }
-
-    @Test
     public void checkIfReturnedSubtaskIsSame() {
         Subtask subtask = new Subtask("subtask1", "desc1", 1);
         taskManager.addTask(subtask);
