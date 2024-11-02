@@ -5,8 +5,8 @@ import main.java.kz.zip.taskmaster.enums.TaskCondition;
 import java.util.Objects;
 
 public class Task {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     private TaskCondition taskCondition;
     private long id;
 

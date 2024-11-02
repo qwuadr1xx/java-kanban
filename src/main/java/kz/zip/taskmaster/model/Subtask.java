@@ -3,7 +3,7 @@ package main.java.kz.zip.taskmaster.model;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private long epicId;
+    private final long epicId;
 
     public Subtask(String name, String description, long epicId) {
         super(name, description);
