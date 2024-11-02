@@ -1,4 +1,4 @@
-package main.java.kz.zip.taskmaster.model;
+package kz.zip.taskmaster.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "main.java.kz.zip.taskmaster.model.Epic{" +
+        return "kz.zip.taskmaster.model.Epic{" +
                 "name='" + getName() + '\'' +
                 ", description.length='" + getDescription().length() + '\'' +
                 ", taskCondition=" + getTaskCondition() +

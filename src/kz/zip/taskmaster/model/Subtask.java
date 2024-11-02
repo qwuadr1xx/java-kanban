@@ -1,4 +1,4 @@
-package main.java.kz.zip.taskmaster.model;
+package kz.zip.taskmaster.model;
 
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "main.java.kz.zip.taskmaster.model.Subtask{" +
+        return "kz.zip.taskmaster.model.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description.length='" + getDescription().length() + '\'' +
                 ", taskCondition=" + getTaskCondition() +
