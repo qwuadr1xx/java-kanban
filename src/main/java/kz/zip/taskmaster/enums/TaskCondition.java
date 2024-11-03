@@ -1,4 +1,4 @@
-package kz.zip.taskmaster.enums;
+package main.java.kz.zip.taskmaster.enums;
 
 public enum TaskCondition {
     NEW,

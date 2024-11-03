@@ -1,4 +1,4 @@
-package kz.zip.taskmaster.service;
+package main.java.kz.zip.taskmaster.service;
 
 import java.util.List;
 
