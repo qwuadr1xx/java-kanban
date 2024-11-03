@@ -1,8 +1,8 @@
-package main.java.kz.zip.taskmaster.service;
+package kz.zip.taskmaster.service;
 
-import main.java.kz.zip.taskmaster.model.Epic;
-import main.java.kz.zip.taskmaster.model.Subtask;
-import main.java.kz.zip.taskmaster.model.Task;
+import kz.zip.taskmaster.model.Epic;
+import kz.zip.taskmaster.model.Subtask;
+import kz.zip.taskmaster.model.Task;
 
 import java.util.List;
 

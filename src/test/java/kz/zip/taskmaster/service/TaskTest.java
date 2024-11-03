@@ -1,9 +1,9 @@
-package test.java.kz.zip.taskmaster.service;
+package kz.zip.taskmaster.service;
 
-import main.java.kz.zip.taskmaster.enums.TaskCondition;
-import main.java.kz.zip.taskmaster.model.Task;
-import main.java.kz.zip.taskmaster.service.InMemoryTaskManager;
-import main.java.kz.zip.taskmaster.service.Manager;
+import kz.zip.taskmaster.enums.TaskCondition;
+import kz.zip.taskmaster.model.Task;
+import kz.zip.taskmaster.service.InMemoryTaskManager;
+import kz.zip.taskmaster.service.Manager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package main.java.kz.zip.taskmaster.service;
+package kz.zip.taskmaster.service;
 
 public class Manager {
     public static InMemoryTaskManager getDefault() {

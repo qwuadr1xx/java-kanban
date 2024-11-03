@@ -1,6 +1,6 @@
-package main.java.kz.zip.taskmaster.service;
+package kz.zip.taskmaster.service;
 
-import main.java.kz.zip.taskmaster.model.Task;
+import kz.zip.taskmaster.model.Task;
 
 import java.util.ArrayList;
 import java.util.Map;
