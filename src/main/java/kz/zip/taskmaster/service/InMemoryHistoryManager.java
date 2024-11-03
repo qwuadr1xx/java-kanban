@@ -3,18 +3,18 @@ package kz.zip.taskmaster.service;
 import kz.zip.taskmaster.model.Task;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager<Task> {
-    private final Map<Long, Node<Task>> nodeIdentificators;
 
-    Node<Task> tail;
-    Node<Task> head;
+    private final Map<Long, Node<Task>> nodeIdentifiers;
+    private Node<Task> tail;
+    private Node<Task> head;
 
     public InMemoryHistoryManager() {
-        nodeIdentificators = new HashMap<>();
+        nodeIdentifiers = new HashMap<>();
     }
 
     @Override
@@ -33,26 +33,34 @@ public class InMemoryHistoryManager implements HistoryManager<Task> {
         if (task == null) {
             return;
         }
-
-        if (nodeIdentificators.containsKey(task.getId())) {
+        if (nodeIdentifiers.containsKey(task.getId())) {
             remove(task.getId());
         }
-
         linkLast(task);
     }
 
     @Override
     public void remove(long id) {
-        if (!nodeIdentificators.containsKey(id)) {
-            return;
-        }
-
-        Node<Task> node = nodeIdentificators.get(id);
-
+        Node<Task> node = nodeIdentifiers.get(id);
         if (node == null) {
             return;
         }
+        removeNode(node);
+    }
 
+    private void linkLast(Task task) {
+        Node<Task> node = new Node<>(task);
+        if (tail == null) {
+            head = tail = node;
+        } else {
+            tail.next = node;
+            node.prev = tail;
+            tail = node;
+        }
+        nodeIdentifiers.put(task.getId(), node);
+    }
+
+    private void removeNode(Node<Task> node) {
         Node<Task> prevNode = node.prev;
         Node<Task> nextNode = node.next;
 
@@ -61,31 +69,27 @@ public class InMemoryHistoryManager implements HistoryManager<Task> {
         } else {
             head = nextNode;
         }
-
         if (nextNode != null) {
             nextNode.prev = prevNode;
         } else {
             tail = prevNode;
         }
-
-        nodeIdentificators.remove(id);
+        nodeIdentifiers.remove(node.element.getId());
         node.prev = null;
         node.next = null;
     }
 
-    void linkLast(Task task) {
-        Node<Task> node = new Node<>(task);
+    static class Node<E> {
 
-        if (tail == null) {
-            tail = node;
-            head = node;
-        } else {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
+        Node<E> prev;
+        Node<E> next;
+        E element;
+
+        Node(E element) {
+            this.element = element;
         }
 
-        nodeIdentificators.put(task.getId(), node);
     }
+
 }
 
