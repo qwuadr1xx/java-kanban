@@ -194,18 +194,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     id = Long.max(id, task.getId());
                 }
                 switch (Objects.requireNonNull(task).getTaskType().toString()) {
-                    case ("TASK"): tasks.put(task.getId(), task);
+                    case ("TASK"):
+                        tasks.put(task.getId(), task);
                         break;
-                    case ("EPIC"): epics.put(task.getId(), (Epic) task);
+                    case ("EPIC"):
+                        epics.put(task.getId(), (Epic) task);
                         break;
-                    case ("SUBTASK"): Subtask subtask = (Subtask) task;
+                    case ("SUBTASK"):
+                        Subtask subtask = (Subtask) task;
                         subtasks.put(task.getId(), subtask);
                         Epic parentEpic = epics.get(subtask.getEpicId());
                         if (parentEpic != null) {
                             parentEpic.addIdToList(subtask.getId());
                         }
                         break;
-                    case null, default: break;
+                    case null, default:
+                        break;
                 }
             }
             fileBackedTaskManager.setIdCounter(id);
@@ -219,7 +223,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     private String toCSV(Task task) {
-        TaskType taskType = task.getTaskType();;
+        TaskType taskType = task.getTaskType();
         String name = task.getName();
         String description = task.getDescription();
         TaskCondition taskCondition = task.getTaskCondition();
