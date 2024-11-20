@@ -2,8 +2,6 @@ package kz.zip.taskmaster.service;
 
 import kz.zip.taskmaster.model.Epic;
 import kz.zip.taskmaster.model.Subtask;
-import kz.zip.taskmaster.service.InMemoryTaskManager;
-import kz.zip.taskmaster.service.Manager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

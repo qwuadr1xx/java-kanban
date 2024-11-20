@@ -1,10 +1,12 @@
 package kz.zip.taskmaster.model;
 
 import kz.zip.taskmaster.enums.TaskCondition;
+import kz.zip.taskmaster.enums.TaskType;
 
 import java.util.Objects;
 
 public class Task {
+    private static final TaskType taskType = TaskType.TASK;
     private final String name;
     private final String description;
     private TaskCondition taskCondition;
@@ -20,6 +22,13 @@ public class Task {
         this.description = description;
         this.id = id;
         taskCondition = TaskCondition.NEW;
+    }
+
+    public Task(String name, String description, TaskCondition taskCondition, long id) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.taskCondition = taskCondition;
     }
 
     public String getName() {
@@ -38,6 +47,10 @@ public class Task {
         return id;
     }
 
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
     public void setTaskCondition(TaskCondition taskCondition) {
         this.taskCondition = taskCondition;
     }
@@ -48,12 +61,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "kz.zip.taskmaster.model.Task{" +
-                "name='" + name + '\'' +
-                ", description.length='" + description.length() + '\'' +
-                ", taskCondition=" + taskCondition +
-                ", id=" + id +
-                '}';
+        return "TASK" + ',' + name + ',' + description + ',' + taskCondition + ',' + id;
     }
 
     @Override
