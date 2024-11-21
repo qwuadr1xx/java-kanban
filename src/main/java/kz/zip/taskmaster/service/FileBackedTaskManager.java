@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
@@ -192,8 +191,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 Task task = fromSCV(line);
                 if (task != null) {
                     id = Long.max(id, task.getId());
+                } else {
+                    continue;
                 }
-                switch (Objects.requireNonNull(task).getTaskType().toString()) {
+                switch (task.getTaskType().toString()) {
                     case ("TASK"):
                         tasks.put(task.getId(), task);
                         break;
@@ -247,13 +248,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         if (s.isEmpty() || s.isBlank()) {
             return null;
         }
-        String[] parts = s.split(",");
-        return switch (parts[0]) {
-            case ("TASK") -> new Task(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
-            case ("EPIC") -> new Epic(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
-            case ("SUBTASK") ->
-                    new Subtask(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]), Long.parseLong(parts[5]));
-            default -> null;
-        };
+        if (s.contains(",")) {
+            String[] parts = s.split(",");
+            if (parts.length == 5 || parts.length == 6) {
+                return switch (parts[0]) {
+                    case ("TASK") ->
+                            new Task(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
+                    case ("EPIC") ->
+                            new Epic(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
+                    case ("SUBTASK") ->
+                            new Subtask(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]), Long.parseLong(parts[5]));
+                    default -> null;
+                };
+            }
+        }
+        return null;
     }
 }

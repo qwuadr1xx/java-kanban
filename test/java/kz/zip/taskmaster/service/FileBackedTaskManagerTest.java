@@ -1,6 +1,8 @@
 package kz.zip.taskmaster.service;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import kz.zip.taskmaster.exception.ManagerSaveException;
@@ -42,14 +44,16 @@ public class FileBackedTaskManagerTest {
             throw new RuntimeException(e);
         }
 
+        FileBackedTaskManager loadedManager;
         try {
-            FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
-            assertTrue(loadedManager.getListOfTasks().isEmpty());
-            assertTrue(loadedManager.getListOfEpics().isEmpty());
-            assertTrue(loadedManager.getListOfSubtasks().isEmpty());
+            loadedManager = FileBackedTaskManager.loadFromFile(file);
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
+
+        assertTrue(loadedManager.getListOfTasks().isEmpty());
+        assertTrue(loadedManager.getListOfEpics().isEmpty());
+        assertTrue(loadedManager.getListOfSubtasks().isEmpty());
     }
 
     @Test
@@ -102,5 +106,53 @@ public class FileBackedTaskManagerTest {
         assertEquals(manager.getSubtaskById(3), loadedManager.getSubtaskById(3));
     }
 
+    @Test
+    void checkIsConnectionBetweenEpicsAndSubtasksStay() {
+        Epic epic = new Epic("Epic 1", "Epic Description");
+        manager.addEpic(epic);
+
+        Subtask subtask1 = new Subtask("Subtask 1", "Subtask Description 1", 1);
+        Subtask subtask2 = new Subtask("Subtask 2", "Subtask Description 2", 1);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask2);
+
+        assertEquals(manager.getEpicById(1), manager.getEpicById(subtask1.getEpicId()));
+        assertEquals(manager.getEpicById(1), manager.getEpicById(subtask2.getEpicId()));
+
+        FileBackedTaskManager loadedManager;
+        try {
+            loadedManager = FileBackedTaskManager.loadFromFile(file);
+        } catch (ManagerSaveException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals(loadedManager.getEpicById(1), loadedManager.getEpicById(subtask1.getEpicId()));
+        assertEquals(loadedManager.getEpicById(1), loadedManager.getEpicById(subtask2.getEpicId()));
+        assertEquals(manager.getEpicById(1).getIdList(), loadedManager.getEpicById(1).getIdList());
+    }
+
+    @Test
+    void checkIfIncorrectStringResultIsNull() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("");
+            writer.newLine();
+            writer.write("1 Sentence");
+            writer.newLine();
+            writer.write("1 Sentence, 2 Sentence");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        FileBackedTaskManager loadedManager;
+        try {
+            loadedManager = FileBackedTaskManager.loadFromFile(file);
+        } catch (ManagerSaveException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertTrue(loadedManager.getListOfTasks().isEmpty());
+        assertTrue(loadedManager.getListOfEpics().isEmpty());
+        assertTrue(loadedManager.getListOfSubtasks().isEmpty());
+    }
 }
 

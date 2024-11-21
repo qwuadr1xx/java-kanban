@@ -35,8 +35,7 @@ public class Epic extends Task {
     }
 
     public List<Long> getIdList() {
-        List<Long> listToReturn = subtaskIdList;
-        return listToReturn;
+        return new ArrayList<>(subtaskIdList);
     }
 
     @Override
