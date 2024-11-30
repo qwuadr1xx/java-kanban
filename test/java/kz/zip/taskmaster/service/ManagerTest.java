@@ -1,9 +1,6 @@
 package kz.zip.taskmaster.service;
 
 import kz.zip.taskmaster.model.Task;
-import kz.zip.taskmaster.service.InMemoryHistoryManager;
-import kz.zip.taskmaster.service.InMemoryTaskManager;
-import kz.zip.taskmaster.service.Manager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

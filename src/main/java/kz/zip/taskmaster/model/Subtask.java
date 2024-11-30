@@ -1,8 +1,12 @@
 package kz.zip.taskmaster.model;
 
+import kz.zip.taskmaster.enums.TaskCondition;
+import kz.zip.taskmaster.enums.TaskType;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
+    private static final TaskType taskType = TaskType.SUBTASK;
     private final long epicId;
 
     public Subtask(String name, String description, long epicId) {
@@ -15,19 +19,23 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public Subtask(String name, String description, TaskCondition taskCondition, long id, long epicId) {
+        super(name, description, taskCondition, id);
+        this.epicId = epicId;
+    }
+
     public long getEpicId() {
         return epicId;
     }
 
     @Override
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    @Override
     public String toString() {
-        return "kz.zip.taskmaster.model.Subtask{" +
-                "name='" + getName() + '\'' +
-                ", description.length='" + getDescription().length() + '\'' +
-                ", taskCondition=" + getTaskCondition() +
-                ", id=" + getId() +
-                ", epicId=" + epicId +
-                '}';
+        return "SUBTASK" + ',' + getName() + ',' + getDescription() + ',' + getTaskCondition() + ',' + getId() + ',' + getEpicId();
     }
 
     @Override

@@ -8,9 +8,9 @@ import kz.zip.taskmaster.model.Task;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Long, Task> tasks = new HashMap<>();
-    private final Map<Long, Epic> epics = new HashMap<>();
-    private final Map<Long, Subtask> subtasks = new HashMap<>();
+    private Map<Long, Task> tasks = new HashMap<>();
+    private Map<Long, Epic> epics = new HashMap<>();
+    private Map<Long, Subtask> subtasks = new HashMap<>();
     InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
     private long idCounter = 1;
 
@@ -78,14 +78,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public boolean addSubtask(Subtask subtask) {
-        if (!epics.containsKey(subtask.getEpicId())) {
-            return false;
-        } else {
-            long id = generateId();
+        long id = generateId();
+        if (epics.containsKey(subtask.getEpicId())) {
             subtasks.put(id, new Subtask(subtask.getName(), subtask.getDescription(), id, subtask.getEpicId()));
             epics.get(subtask.getEpicId()).addIdToList(id);
             updateEpicCondition(subtask.getEpicId());
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -147,7 +147,24 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    public void setTasks(Map<Long, Task> map) {
+        tasks = map;
+    }
+
+    public void setEpics(Map<Long, Epic> map) {
+        epics = map;
+    }
+
+    public void setSubtasks(Map<Long, Subtask> map) {
+        subtasks = map;
+    }
+
+    public void setIdCounter(long idCounter) {
+        this.idCounter = idCounter;
+    }
+
     private long generateId() {
         return idCounter++;
     }
+
 }
