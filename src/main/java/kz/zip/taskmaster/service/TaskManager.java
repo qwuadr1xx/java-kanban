@@ -25,17 +25,17 @@ public interface TaskManager {
 
     Subtask getSubtaskById(long id);
 
-    void addTask(Task task);
+    boolean addTask(Task task);
 
     void addEpic(Epic epic);
 
     boolean addSubtask(Subtask subtask);
 
-    void updateTask(Task task);
+    boolean updateTask(Task task);
 
-    void updateEpic(Epic epic);
+    boolean updateEpic(Epic epic);
 
-    void updateSubtask(Subtask subtask);
+    boolean updateSubtask(Subtask subtask);
 
     void removeTask(long id);
 
