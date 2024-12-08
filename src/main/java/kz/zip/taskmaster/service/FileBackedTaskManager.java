@@ -4,6 +4,7 @@ import kz.zip.taskmaster.enums.TaskCondition;
 import kz.zip.taskmaster.enums.TaskType;
 import kz.zip.taskmaster.exception.ManagerSaveException;
 import kz.zip.taskmaster.model.*;
+import kz.zip.taskmaster.utils.DateTimeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,10 +57,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public void addTask(Task task) {
-        super.addTask(task);
+    public boolean addTask(Task task) {
+        boolean isInterested = super.addTask(task);
         try {
             save();
+            return isInterested;
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
@@ -65,26 +69,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     @Override
     public boolean addSubtask(Subtask subtask) {
-        if (super.addSubtask(subtask)) {
-            try {
-                save();
-            } catch (ManagerSaveException e) {
-                throw new RuntimeException(e);
-            }
-            return true;
-        } else {
-            return false;
+        boolean isInterested = super.addSubtask(subtask);
+        try {
+            save();
+            return isInterested;
+        } catch (ManagerSaveException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void addEpic(Epic epic) {
         super.addEpic(epic);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -118,30 +114,33 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public void updateTask(Task task) {
-        super.updateTask(task);
+    public boolean updateTask(Task task) {
+        boolean isInterested = super.updateTask(task);
         try {
             save();
+            return isInterested;
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        super.updateSubtask(subtask);
+    public boolean updateSubtask(Subtask subtask) {
+        boolean isInterested = super.updateSubtask(subtask);
         try {
             save();
+            return isInterested;
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void updateEpic(Epic epic) {
-        super.updateEpic(epic);
+    public boolean updateEpic(Epic epic) {
+        boolean isInterested = super.updateEpic(epic);
         try {
             save();
+            return isInterested;
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
@@ -159,7 +158,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("type,name,description,condition,id,epicId");
+            writer.write("type,name,description,condition,id,epicId,startTime,duration");
             writer.newLine();
             for (Task task : getListOfTasks()) {
                 writer.write(toCSV(task));
@@ -206,7 +205,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         subtasks.put(task.getId(), subtask);
                         Epic parentEpic = epics.get(subtask.getEpicId());
                         if (parentEpic != null) {
-                            parentEpic.addIdToList(subtask.getId());
+                            parentEpic.addToList(subtask);
                         }
                         break;
                     case null, default:
@@ -233,13 +232,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         if (task instanceof Subtask) {
             epicId = ((Subtask) task).getEpicId();
         }
+        LocalDateTime localDateTime = task.getStartTime();
+        Duration duration = task.getDuration();
         String stringCSV;
         if (epicId == -1) {
-            stringCSV = String.format("%s,%s,%s,%s,%d",
-                    taskType.toString(), name, description, taskCondition, id);
+            stringCSV = String.format("%s,%s,%s,%s,%d,%s,%s",
+                    taskType.toString(), name, description, taskCondition, id,
+                    duration.toMinutes(), (localDateTime == null) ? "null" : localDateTime.toString());
         } else {
-            stringCSV = String.format("%s,%s,%s,%s,%d,%d",
-                    taskType.toString(), name, description, taskCondition, id, epicId);
+            stringCSV = String.format("%s,%s,%s,%s,%d,%d,%s,%s",
+                    taskType.toString(), name, description, taskCondition, id, epicId,
+                    duration.toMinutes(), localDateTime.toString());
         }
         return stringCSV;
     }
@@ -250,14 +253,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
         if (s.contains(",")) {
             String[] parts = s.split(",");
-            if (parts.length == 5 || parts.length == 6) {
+            if (parts.length == 7 || parts.length == 8) {
                 return switch (parts[0]) {
                     case ("TASK") ->
-                            new Task(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
+                            new Task(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]),
+                                    Duration.ofMinutes(Long.parseLong(parts[5])), LocalDateTime.parse(parts[6]));
                     case ("EPIC") ->
-                            new Epic(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]));
-                    case ("SUBTASK") ->
-                            new Subtask(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]), Long.parseLong(parts[5]));
+                            new Epic(parts[1], parts[2], TaskCondition.valueOf(parts[3]), Long.parseLong(parts[4]),
+                                    Duration.ofMinutes(Long.parseLong(parts[5])), LocalDateTime.parse(parts[6]));
+                    case ("SUBTASK") -> new Subtask(parts[1], parts[2], TaskCondition.valueOf(parts[3]),
+                            Long.parseLong(parts[4]), Long.parseLong(parts[5]),
+                            Duration.ofMinutes(Long.parseLong(parts[6])), LocalDateTime.parse(parts[7]));
                     default -> null;
                 };
             }
