@@ -35,24 +35,24 @@ public class Epic extends Task {
         super(name, description, id, Duration.ZERO, null);
         this.subtaskList = subtaskList;
         setDuration(getEpicDuration());
-        setStartTime(getEpicLocalDateTime());
+        setStartTime(getEpicEarliestStartTime());
     }
 
     public void addToList(Subtask subtask) {
         subtaskList.add(subtask);
         setDuration(getEpicDuration());
-        setStartTime(getEpicLocalDateTime());
+        setStartTime(getEpicEarliestStartTime());
     }
 
     public void removeFromList(Subtask subtask) {
         subtaskList.remove(subtask);
-        if (!subtaskList.isEmpty()) {
-            setDuration(getEpicDuration());
-            setStartTime(getEpicLocalDateTime());
-        } else {
+        if (subtaskList.isEmpty()) {
             setDuration(Duration.ZERO);
             setStartTime(null);
         }
+        setDuration(getEpicDuration());
+        setStartTime(getEpicEarliestStartTime());
+
     }
 
     public List<Long> getIdList() {
@@ -87,7 +87,7 @@ public class Epic extends Task {
                 .reduce(Duration::plus).get();
     }
 
-    private LocalDateTime getEpicLocalDateTime() {
+    private LocalDateTime getEpicEarliestStartTime() {
         if (subtaskList.isEmpty()) {
             return null;
         }
