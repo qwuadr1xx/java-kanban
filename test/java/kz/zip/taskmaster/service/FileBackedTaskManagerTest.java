@@ -6,22 +6,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import kz.zip.taskmaster.exception.ManagerSaveException;
-import kz.zip.taskmaster.model.Epic;
-import kz.zip.taskmaster.model.Subtask;
-import kz.zip.taskmaster.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileBackedTaskManagerTest {
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     File file;
-    FileBackedTaskManager manager;
 
     @BeforeEach
-    void setFile() {
+    public void setFile() {
         {
             try {
                 file = File.createTempFile("test", ".csv");
@@ -29,17 +25,21 @@ public class FileBackedTaskManagerTest {
                 throw new RuntimeException(e);
             }
         }
-        manager = new FileBackedTaskManager(file);
+        taskManager = new FileBackedTaskManager(file);
+        super.setUp();
     }
 
     @Test
     void checkIfNullSaveFileIsNull() {
-        assertTrue(manager.getListOfTasks().isEmpty());
-        assertTrue(manager.getListOfEpics().isEmpty());
-        assertTrue(manager.getListOfSubtasks().isEmpty());
+        taskManager.clearTasks();
+        taskManager.clearEpics();
+        taskManager.clearSubtasks();
+        assertTrue(taskManager.getListOfTasks().isEmpty());
+        assertTrue(taskManager.getListOfEpics().isEmpty());
+        assertTrue(taskManager.getListOfSubtasks().isEmpty());
 
         try {
-            manager.save();
+            taskManager.save();
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
@@ -58,12 +58,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void checkIfSavesTasksAndLoadThem() {
-        Task task1 = new Task("Task 1", "Description 1");
-        Task task2 = new Task("Task 2", "Description 2");
-        manager.addTask(task1);
-        manager.addTask(task2);
-
-        assertEquals(2, manager.getListOfTasks().size());
+        assertEquals(2, taskManager.getListOfTasks().size());
 
         FileBackedTaskManager loadedManager;
 
@@ -74,22 +69,14 @@ public class FileBackedTaskManagerTest {
         }
 
         assertEquals(2, loadedManager.getListOfTasks().size());
-        assertEquals(manager.getTaskById(1), loadedManager.getTaskById(1));
-        assertEquals(manager.getTaskById(2), loadedManager.getTaskById(2));
+        assertEquals(taskManager.getTaskById(1), loadedManager.getTaskById(1));
+        assertEquals(taskManager.getTaskById(2), loadedManager.getTaskById(2));
     }
 
     @Test
     void checkIfSavesEpicsAndSubtasksAndLoadThem() {
-        Epic epic = new Epic("Epic 1", "Epic Description");
-        manager.addEpic(epic);
-
-        Subtask subtask1 = new Subtask("Subtask 1", "Subtask Description 1", 1);
-        Subtask subtask2 = new Subtask("Subtask 2", "Subtask Description 2", 1);
-        manager.addSubtask(subtask1);
-        manager.addSubtask(subtask2);
-
-        assertEquals(1, manager.getListOfEpics().size());
-        assertEquals(2, manager.getListOfSubtasks().size());
+        assertEquals(2, taskManager.getListOfEpics().size());
+        assertEquals(4, taskManager.getListOfSubtasks().size());
 
         FileBackedTaskManager loadedManager;
         try {
@@ -98,26 +85,16 @@ public class FileBackedTaskManagerTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(1, loadedManager.getListOfEpics().size());
-        assertEquals(2, loadedManager.getListOfSubtasks().size());
-
-        assertEquals(manager.getEpicById(1), loadedManager.getEpicById(1));
-        assertEquals(manager.getSubtaskById(2), loadedManager.getSubtaskById(2));
-        assertEquals(manager.getSubtaskById(3), loadedManager.getSubtaskById(3));
+        assertEquals(2, loadedManager.getListOfEpics().size());
+        assertEquals(4, loadedManager.getListOfSubtasks().size());
     }
 
     @Test
     void checkIsConnectionBetweenEpicsAndSubtasksStay() {
-        Epic epic = new Epic("Epic 1", "Epic Description");
-        manager.addEpic(epic);
-
-        Subtask subtask1 = new Subtask("Subtask 1", "Subtask Description 1", 1);
-        Subtask subtask2 = new Subtask("Subtask 2", "Subtask Description 2", 1);
-        manager.addSubtask(subtask1);
-        manager.addSubtask(subtask2);
-
-        assertEquals(manager.getEpicById(1), manager.getEpicById(subtask1.getEpicId()));
-        assertEquals(manager.getEpicById(1), manager.getEpicById(subtask2.getEpicId()));
+        assertEquals(taskManager.getEpicById(3), taskManager.getEpicById(taskManager.getSubtaskById(5).getEpicId()));
+        assertEquals(taskManager.getEpicById(3), taskManager.getEpicById(taskManager.getSubtaskById(6).getEpicId()));
+        assertEquals(taskManager.getEpicById(4), taskManager.getEpicById(taskManager.getSubtaskById(7).getEpicId()));
+        assertEquals(taskManager.getEpicById(4), taskManager.getEpicById(taskManager.getSubtaskById(8).getEpicId()));
 
         FileBackedTaskManager loadedManager;
         try {
@@ -126,9 +103,10 @@ public class FileBackedTaskManagerTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(loadedManager.getEpicById(1), loadedManager.getEpicById(subtask1.getEpicId()));
-        assertEquals(loadedManager.getEpicById(1), loadedManager.getEpicById(subtask2.getEpicId()));
-        assertEquals(manager.getEpicById(1).getIdList(), loadedManager.getEpicById(1).getIdList());
+        assertEquals(loadedManager.getEpicById(3), loadedManager.getEpicById(loadedManager.getSubtaskById(5).getEpicId()));
+        assertEquals(loadedManager.getEpicById(3), loadedManager.getEpicById(loadedManager.getSubtaskById(6).getEpicId()));
+        assertEquals(loadedManager.getEpicById(4), loadedManager.getEpicById(loadedManager.getSubtaskById(7).getEpicId()));
+        assertEquals(loadedManager.getEpicById(4), loadedManager.getEpicById(loadedManager.getSubtaskById(8).getEpicId()));
     }
 
     @Test

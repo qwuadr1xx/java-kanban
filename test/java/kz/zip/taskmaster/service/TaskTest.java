@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 class TaskTest {
 
     InMemoryTaskManager taskManager;
@@ -14,7 +17,7 @@ class TaskTest {
     @BeforeEach
     public void createTasks() {
         taskManager = Manager.getDefault();
-        task = new Task("task1", "desc1");
+        task = new Task("task1", "desc1", Duration.ofMinutes(30), LocalDateTime.of(2020, 1, 1, 12, 0));
         taskManager.addTask(task);
     }
 
