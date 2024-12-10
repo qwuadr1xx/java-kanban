@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 class SubtaskTest {
 
     InMemoryTaskManager taskManager;
@@ -17,7 +20,7 @@ class SubtaskTest {
         taskManager = Manager.getDefault();
         Epic epic = new Epic("epic1", "desc1");
         taskManager.addEpic(epic);
-        subtask = new Subtask("subtask1", "desc1", 1);
+        subtask = new Subtask("subtask1", "desc1", 1, Duration.ofMinutes(30), LocalDateTime.of(2020, 1, 1, 12, 0));
         taskManager.addSubtask(subtask);
     }
 

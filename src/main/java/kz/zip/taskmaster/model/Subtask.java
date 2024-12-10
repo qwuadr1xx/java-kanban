@@ -3,24 +3,29 @@ package kz.zip.taskmaster.model;
 import kz.zip.taskmaster.enums.TaskCondition;
 import kz.zip.taskmaster.enums.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private static final TaskType taskType = TaskType.SUBTASK;
     private final long epicId;
 
-    public Subtask(String name, String description, long epicId) {
-        super(name, description);
+    public Subtask(String name, String description, long epicId, Duration duration,
+                   LocalDateTime startTime) {
+        super(name, description, duration, startTime);
         this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, long id, long epicId) {
-        super(name, description, id);
+    public Subtask(String name, String description, long id, long epicId, Duration duration,
+                   LocalDateTime startTime) {
+        super(name, description, id, duration, startTime);
         this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, TaskCondition taskCondition, long id, long epicId) {
-        super(name, description, taskCondition, id);
+    public Subtask(String name, String description, TaskCondition taskCondition, long id, long epicId, Duration duration,
+                   LocalDateTime startTime) {
+        super(name, description, taskCondition, id, duration, startTime);
         this.epicId = epicId;
     }
 
