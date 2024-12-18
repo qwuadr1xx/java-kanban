@@ -13,8 +13,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
@@ -153,6 +156,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         } catch (ManagerSaveException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Subtask> getEpicSubtasks(long id) {
+        return super.getEpicSubtasks(id);
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return new ArrayList<>(super.getHistory());
+    }
+
+    @Override
+    public boolean isTaskIdInData(long id) {
+        return super.isTaskIdInData(id);
+    }
+
+    @Override
+    public boolean isSubtaskIdInData(long id) {
+        return super.isSubtaskIdInData(id);
+    }
+
+    @Override
+    public boolean isEpicIdInData(long id) {
+        return super.isEpicIdInData(id);
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        return super.getPrioritizedTasks();
     }
 
     public void save() throws ManagerSaveException {
