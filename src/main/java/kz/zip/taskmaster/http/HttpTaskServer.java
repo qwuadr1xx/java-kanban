@@ -23,6 +23,7 @@ public class HttpTaskServer {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .serializeNulls()
                 .create();
 
         server.createContext("/tasks", new TaskHandler(taskManager, gson));

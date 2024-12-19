@@ -111,6 +111,13 @@ public class EpicHandler extends BaseHttpHandler {
         InputStream input = exchange.getRequestBody();
         String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
         Epic epic = gson.fromJson(body, Epic.class);
+
+        if (epic.getName() == null) {
+            sendResponse(exchange, 400, "Эпик должен иметь имя");
+        } else if (epic.getDescription() == null) {
+            sendResponse(exchange, 400, "Эпик должен иметь описание");
+        }
+
         if (epic.getId() == 0) {
             taskManager.addEpic(epic);
         } else {

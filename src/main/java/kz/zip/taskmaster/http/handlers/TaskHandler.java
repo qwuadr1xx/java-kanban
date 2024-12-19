@@ -46,10 +46,10 @@ public class TaskHandler extends BaseHttpHandler {
                     sendNotFound(exchange, "Путь не найден");
                 }
             } else {
-                sendNotFound(exchange, "Метод не поддерживается");
+                sendResponse(exchange, 405, "Метод не поддерживается");
             }
         } catch (Exception e) {
-            sendResponse(exchange, 500, "Ошибка при обработке запроса");
+            sendResponse(exchange, 500, "Возникла необрабатываемая проблема");
         }
     }
 
@@ -86,19 +86,22 @@ public class TaskHandler extends BaseHttpHandler {
         InputStream input = exchange.getRequestBody();
         String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(body, Task.class);
-        if (task.getId() == 0) {
-            if (!taskManager.addTask(task)) {
-                sendTest(exchange, 201, "Задача добавлена");
-            } else {
-                sendHasInteractions(exchange);
-            }
-        } else {
-            if (!taskManager.updateTask(task)) {
-                sendTest(exchange, 201, "Задача добавлена");
-            } else {
-                sendHasInteractions(exchange);
-            }
+
+        if (task.getName() == null) {
+            sendResponse(exchange, 400, "Задача должна иметь имя");
+        } else if (task.getDescription() == null) {
+            sendResponse(exchange, 400, "Задача должна иметь описание");
         }
+
+        boolean isTaskIntersected = (task.getId() == 0)
+                ? taskManager.addTask(task)
+                : taskManager.updateTask(task);
+
+        if (isTaskIntersected) {
+            sendHasInteractions(exchange);
+        }
+
+        sendTest(exchange, 201, "Задача добавлена");
     }
 
     private void handleDeleteAllTasks(HttpExchange exchange) throws IOException {

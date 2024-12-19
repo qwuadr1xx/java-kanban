@@ -92,19 +92,21 @@ public class SubtaskHandler extends BaseHttpHandler {
             return;
         }
 
-        if (subtask.getId() == 0) {
-            if (!taskManager.addSubtask(subtask)) {
-                sendTest(exchange, 201, "Задача добавлена");
-            } else {
-                sendHasInteractions(exchange);
-            }
-        } else {
-            if (!taskManager.updateSubtask(subtask)) {
-                sendTest(exchange, 201, "Задача добавлена");
-            } else {
-                sendHasInteractions(exchange);
-            }
+        if (subtask.getName() == null) {
+            sendResponse(exchange, 400, "Подзадача должна иметь имя");
+        } else if (subtask.getDescription() == null) {
+            sendResponse(exchange, 400, "Подзадача должна иметь описание");
         }
+
+        boolean isTaskIntersected = (subtask.getId() == 0)
+                ? taskManager.addSubtask(subtask)
+                : taskManager.updateSubtask(subtask);
+
+        if (isTaskIntersected) {
+            sendHasInteractions(exchange);
+        }
+
+        sendTest(exchange, 201, "Подзадача добавлена");
     }
 
     private void handleDeleteAllSubtasks(HttpExchange exchange) throws IOException {
