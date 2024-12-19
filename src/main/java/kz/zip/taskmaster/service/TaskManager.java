@@ -5,6 +5,7 @@ import kz.zip.taskmaster.model.Subtask;
 import kz.zip.taskmaster.model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     List<Task> getListOfTasks();
@@ -42,4 +43,16 @@ public interface TaskManager {
     void removeEpic(long id);
 
     void removeSubtask(long id);
+
+    List<Subtask> getEpicSubtasks(long id);
+
+    List<Task> getHistory();
+
+    boolean isTaskIdInData(long id);
+
+    boolean isSubtaskIdInData(long id);
+
+    boolean isEpicIdInData(long id);
+
+    Set<Task> getPrioritizedTasks();
 }

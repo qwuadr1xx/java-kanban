@@ -183,6 +183,35 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.remove(subtasks.get(id));
     }
 
+    @Override
+    public List<Subtask> getEpicSubtasks(long id) {
+        if (!epics.containsKey(id)) {
+            return null;
+        }
+
+        return new ArrayList<>(epics.get(id).getSubtaskList());
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return new ArrayList<>(inMemoryHistoryManager.getHistory());
+    }
+
+    @Override
+    public boolean isTaskIdInData(long id) {
+        return tasks.containsKey(id);
+    }
+
+    @Override
+    public boolean isSubtaskIdInData(long id) {
+        return subtasks.containsKey(id);
+    }
+
+    @Override
+    public boolean isEpicIdInData(long id) {
+        return epics.containsKey(id);
+    }
+
     public void updateEpicCondition(long epicId) {
         Epic epic = epics.get(epicId);
         if (epic.getSubtaskList().isEmpty()) {
@@ -200,6 +229,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks() {
         return prioritizedTasks;
     }
